@@ -54,7 +54,8 @@ async function collectImageUrls(pageUrl) {
     const page = await browser.newPage();
     await page.goto(pageUrl, { waitUntil: 'networkidle2', timeout: 60000 });
 
-    return page.evaluate(() => {
+    // Await before closing Chromium; otherwise finally can close the target while evaluation is pending.
+    return await page.evaluate(() => {
       const urls = new Set();
 
       for (const img of document.querySelectorAll('img')) {
